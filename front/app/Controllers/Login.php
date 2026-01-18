@@ -10,7 +10,6 @@ class Login extends BaseController
         delete_cookie('auth', DOMAIN);
         delete_cookie('token', DOMAIN);
 
-
         return view('login/login.php');
     }
 }

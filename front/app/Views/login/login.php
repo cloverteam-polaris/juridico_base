@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <title>Universe-Collector</title>
+        <title>LexControl</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
         <meta name="author" content="Clover Team SAS" />
 
         <!-- Favicon icon -->
-        <link rel="icon" href="<?php echo base_url(); ?>assets/images/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
         <!-- fontawesome icon -->
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/fonts/fontawesome/css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="assets/fonts/fontawesome/css/fontawesome-all.min.css">
         <!-- animation css -->
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/animation/css/animate.min.css">
+        <link rel="stylesheet" href="assets/plugins/animation/css/animate.min.css">
 
         <!-- vendor css -->
-        <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/style.css">
     </head>
     <body style="background-color: #18232e;">
         <div class="auth-wrapper">
@@ -23,7 +23,7 @@
                     <div class="row align-items-center">
                         <div class="col-md-6">
                             <div class="card-body">
-                                <img src="<?php echo base_url(); ?>assets/images/logoHorizontal_300.png" style="position: relative; margin: 0 80px 15px;" alt="Clover Team" title="Clover team"/>
+                                <img src="assets/images/logoHorizontal_300.png" style="position: relative; margin: 0 80px 15px;" alt="Clover Team" title="Clover team"/>
                                 <p>Bienvenido al sistema integral de gestión. Digite sus credenciales para acceder.</p>
                                     <div class="toggle-block">
                                         <div class="form-group mb-2">
@@ -53,8 +53,8 @@
 
     <!-- Required Js -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/js/vendor-all.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script src="<?php echo base_url(); ?>js/login.js"></script>
+    <script src="assets/js/vendor-all.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/login.js"></script>
     </body>
 </html>

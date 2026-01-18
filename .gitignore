@@ -11,7 +11,7 @@ front/vendor
 front/app/Libraries/vendor
 
 
-backend/juridico/
+backend/lexcontrol/
 backend/documents/
 agitariob/__pycache__/
 backend/*.py[codz]
