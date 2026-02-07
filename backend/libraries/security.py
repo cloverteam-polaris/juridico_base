@@ -36,8 +36,7 @@ def decode_token(token: Annotated[str, Depends(outh2_scheme)])-> dict:
 def decode_token_usermodulo(token: Annotated[str, Depends(outh2_scheme)])-> dict:
     try:
         data = jwt.decode(token, secret, algorithms=['HS256'])
-        modulos = json.loads(data['modulos'])
-        if modulos['usuarios'] == 1:
+        if data['idperfil'] < 4:
             return data
         else:
             raise HTTPException(status_code=403, detail="No tienes permisos para relizar esta accion.")

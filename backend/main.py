@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from administration import  administration
 from database.db import engine, Base
 from usuarios import usuarios
 
@@ -33,6 +34,7 @@ app.add_middleware(
 )
 
 app.include_router(usuarios.router)
+app.include_router(administration.router)
 
 
 @app.on_event("startup")

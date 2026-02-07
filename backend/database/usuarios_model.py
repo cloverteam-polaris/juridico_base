@@ -46,61 +46,49 @@ async def get_modulos_data(db: AsyncSession):
     return result.mappings().all()
 
 async def get_active_users(db: AsyncSession):
-    sql = text("SELECT * FROM sessions WHERE idestado = 1 AND date(fechacreacion) = CURDATE();")
+    sql = text("SELECT * FROM sessions WHERE idestado = 1 AND date(fecha) = CURDATE();")
     result = await db.execute(sql)
     return result.mappings().all()
 
 async def get_usuario_info(db: AsyncSession, idsession: int):
-    sql = text('''SELECT usuarios.nombre, usuarios.idperfil, usuarios.idempresa, usuarios.idtipoasesor, usuarios.idgrupoasesor, usuarios.idpais, usuarios.extension, usuarios.extension, sessions.idusuario, sessions.idsession, sessions.usuario, sessions.permisos, sessions.token, sessions.modulos, perfiles.descripcion as perfil, empresas.descripcion as empresa, tipo_asesor.descripcion as tipoasesor, grupos_asesor.descripcion as grupo, pais.descripcion as pais
+    sql = text('''SELECT usuarios.nombre, usuarios.idperfil, sessions.idusuario, sessions.idsession, sessions.usuario, sessions.token, perfiles.descripcion as perfil
                     FROM usuarios
                     INNER JOIN sessions ON usuarios.idusuario = sessions.idusuario
                     INNER JOIN perfiles ON usuarios.idperfil = perfiles.idperfil
-                    INNER JOIN empresas ON usuarios.idempresa = empresas.idempresa
-                    INNER JOIN tipo_asesor ON usuarios.idtipoasesor = tipo_asesor.idtipoasesor
-                    INNER JOIN grupos_asesor ON usuarios.idgrupoasesor = grupos_asesor.idgrupoasesor
-                    INNER JOIN pais ON usuarios.idpais = pais.idpaisasesor
                     WHERE sessions.idsession = :idsession;''')
     result = await db.execute(sql, {"idsession": idsession})
     return result.mappings().first()
 
 async def update_user(db: AsyncSession, usuario: UsuarioActualizar):
-    sql = text("UPDATE usuarios SET documento = :documento, nombre = :nombre, idperfil = :idperfil, idempresa = :idempresa, idestado = :idestado, idtipoasesor = :idtipoasesor, idgrupoasesor = :idgrupoasesor, idpais = :idpais, ultimoingreso = CURRENT_DATE(), ultimaactualizacion = CURRENT_DATE(), email = :email, extension = :extension WHERE idusuario = :idusuario;")
-    await db.execute(sql, {"documento": usuario.documento, "nombre": usuario.nombre, "idperfil": usuario.idperfil, "idempresa": usuario.idempresa, "idestado": usuario.idestado, "idtipoasesor": usuario.idtipoasesor, "idgrupoasesor": usuario.idgrupoasesor, "idpais": usuario.idpais, "email": usuario.email, "extension": usuario.extension, "idusuario": usuario.idusuario})
+    sql = text("UPDATE usuarios SET documento = :documento, nombre = :nombre, idperfil = :idperfil, idestado = :idestado, fechaultimoingreso = CURRENT_DATE(), fechaactualizacion = CURRENT_DATE(), correo = :email, telefono = :telefono WHERE idusuario = :idusuario;")
+    await db.execute(sql, {"documento": usuario.documento, "nombre": usuario.nombre, "idperfil": usuario.idperfil, "idestado": usuario.idestado, "email": usuario.email, "telefono": usuario.telefono, "idusuario": usuario.idusuario})
     await db.commit()
 
 
 async def get_all_users(db: AsyncSession):
-    sql = text('''SELECT a.idusuario, a.usuario, a.documento, a.nombre, a.ultimoingreso, a.ultimaactualizacion, a.creacion, a.email, a.extension, a.idperfil, b.descripcion as perfil, c.descripcion as empresa, d.descripcion as estado, e.descripcion as tipo, f.descripcion as grupo, g.descripcion as pais FROM usuarios a
+    sql = text('''SELECT a.idusuario, a.usuario, a.documento, a.nombre, a.fechaultimoingreso, a.fechaactualizacion, a.fechacreacion, a.correo, a.idperfil, b.descripcion as perfil, d.descripcion as estado FROM usuarios a
                     INNER JOIN perfiles b ON a.idperfil = b.idperfil
-                    INNER JOIN empresas c ON a.idempresa = c.idempresa
-                    INNER JOIN estados d ON a.idestado = d.idestados
-                    INNER JOIN tipo_asesor e ON a.idtipoasesor = e.idtipoasesor
-                    INNER JOIN grupos_asesor f ON a.idgrupoasesor = f.idgrupoasesor
-                    INNER JOIN pais g ON a.idpais = g.idpaisasesor
+                    INNER JOIN estados d ON a.idestado = d.idestado
                     WHERE idusuario > 1;''')
     result = await db.execute(sql)
     return result.mappings().all()
 
 async def get_user(iduser: int, db: AsyncSession):
-    sql = text(''' SELECT usuarios.*, permisos.proyectos FROM usuarios
-                        INNER JOIN permisos ON usuarios.idusuario = permisos.idusuario
-                         WHERE usuarios.idusuario = :idusuario''')
+    sql = text(''' SELECT a.*, b.descripcion as perfil, d.descripcion as estado FROM usuarios a
+                        INNER JOIN perfiles b ON a.idperfil = b.idperfil
+                        INNER JOIN estados d ON a.idestado = d.idestado
+                        WHERE a.idusuario = :idusuario''')
     result = await db.execute(sql, {"idusuario": iduser})
     return result.mappings().all()
 
 async def save_user(db: AsyncSession, userdata: CrearUsuario):
     sql = text('''
-        INSERT INTO usuarios (usuario, documento, nombre, password, idperfil, idempresa, idestado, idtipoasesor, idgrupoasesor, idpais, ultimoingreso, creacion, email, extension) 
-        VALUES (:usuario, :documento, :nombre, :password, :idperfil, :idempresa, :idestado, :idtipoasesor, :idgrupoasesor, :idpais, CURRENT_DATE(), CURRENT_DATE(), :email, :extension);
+        INSERT INTO usuarios (usuario, documento, nombre, password, idperfil, idestado, fechaultimoingreso, fechacreacion, correo, telefono) 
+        VALUES (:usuario, :documento, :nombre, :password, :idperfil,:idestado, CURRENT_DATE(), CURRENT_DATE(), :email, :telefono) ON DUPLICATE KEY UPDATE idestado = '1';
     ''')
-    result = await db.execute(sql, {"usuario": userdata.usuario, "documento": userdata.documento, "password": userdata.password, "nombre": userdata.nombre, "idperfil": userdata.idperfil, "idempresa": userdata.idempresa, "idestado": userdata.idestado, "idtipoasesor": userdata.idtipoasesor, "idgrupoasesor": userdata.idgrupoasesor, "idpais": userdata.idpais, "email": userdata.email, "extension": userdata.extension})
+    result = await db.execute(sql, {"usuario": userdata.usuario, "documento": userdata.documento, "password": userdata.password, "nombre": userdata.nombre, "idperfil": userdata.idperfil, "idestado": userdata.idestado, "email": userdata.email, "telefono": userdata.telefono})
     await db.commit()
     last = result.lastrowid
-    sql = text('''
-        INSERT INTO permisos (proyectos, idusuario) values (:proyectos, :idusuario);
-    ''')
-    await db.execute(sql, {"proyectos": userdata.carteras, "idusuario": last})
-    await db.commit()
     return last
 
 async def set_estado_user(db: AsyncSession, iduser: int, idestado: int):

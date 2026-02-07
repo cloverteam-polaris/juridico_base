@@ -95,21 +95,36 @@ async def get_modulos_info(userdata: Annotated[int, Depends(decode_token)], db: 
 
 @router.get("/getactiveuser", description="Obtiene el listado de los usuarios que se encuentran con una session activa en el sistema.")
 async def active_users(userdata: Annotated[int, Depends(decode_token_usermodulo)], db: AsyncSession = Depends(get_db)):
-    active_users = await get_active_users(db)
-    if not active_users:
-        raise HTTPException(status_code=404, detail="No existen usuarios con una session activa.")
-    else:
-        return active_users
+    try:
+        active_users = await get_active_users(db)
+        if not active_users:
+            raise HTTPException(status_code=404, detail="No existen usuarios con una session activa.")
+        else:
+            return active_users
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al traer los usuarios: {e}")
 
 @router.get("/getallusers", description="Devuelve el listado de todos los usuarios del sistema sin importar el estado.")
 async def get_users(userdata: Annotated[int, Depends(decode_token_usermodulo)], db:AsyncSession = Depends(get_db)):
-    all_users = await get_all_users(db)
-    return all_users
+    try:
+        all_users = await get_all_users(db)
+        if not all_users:
+            return {}
+        else:
+            return all_users
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al traer los usuarios: {e}")
 
 @router.get("/getuser/{iduser}", description="Devuelve el la informacion del usuarios solicitado como parametro.")
 async def get_users(iduser: int, userdata: Annotated[int, Depends(decode_token_usermodulo)], db:AsyncSession = Depends(get_db)):
-    user = await get_user(iduser, db)
-    return user
+    try:
+        user = await get_user(iduser, db)
+        if not user:
+            return {}
+        else:
+            return user
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al traer el usuario: {e}")
 
 @router.get("/getusuariosession/{idsession}", description="Devuelve la informacion de el usuario enviado como parametro.")
 async def get_usuarioid(idsession: int, userdata: Annotated[int, Depends(decode_token)], db: AsyncSession = Depends(get_db)):

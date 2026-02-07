@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import date
 
 
 class Autenticacion(BaseModel):
@@ -26,14 +27,9 @@ class UsuarioActualizar(BaseModel):
     nombre: str
     documento: str
     idperfil: int
-    idempresa: int
     idestado: int
-    idtipoasesor: int
-    carteras: str
-    idgrupoasesor: int
-    idpais: int
     email: str
-    extension: int
+    telefono: str
 
 class CrearUsuario(BaseModel):
     usuario: str
@@ -41,14 +37,9 @@ class CrearUsuario(BaseModel):
     nombre: str
     documento: str
     idperfil: int
-    idempresa: int
     idestado: int
-    idtipoasesor: int
-    carteras: str
-    idgrupoasesor: int
-    idpais: int
     email: str
-    extension: int
+    telefono: str
 
 class ChangePassword(BaseModel):
     idusuario: int

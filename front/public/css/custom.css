@@ -10,6 +10,12 @@
 }
 
 
+table td, table th {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
 
 .timeline-container {
     max-width: 1200px;
